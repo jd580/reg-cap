@@ -1,1 +1,1 @@
-echo "test"
+Write-Output "test"

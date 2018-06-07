@@ -43,21 +43,4 @@ foreach ($keyPath in $regKeyPaths)
     $regKeyProperties += $keyProperty
 }
 
-# When the script is finished, you will still have access to the var $regkeyProperties so you can see all the objects.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# When the script is finished, you will still have access to the var $regkeyProperties so you can see all the objects. 

@@ -1,19 +1,19 @@
 ﻿
 
-## Define some variables
+# Define some variables
 $Final_lab_dir = "C:\Users\$ENV:Username\Desktop\Final_Lab"
 $DEAD_dir = "C:\Users\$ENV:Username\Desktop\Final_Lab\DEAD"
 $ALIVE_dir = "C:\Users\$ENV:Username\Desktop\Final_Lab\ALIVE"
 $Process_Results = "C:\Users\$ENV:Username\Desktop\Final_Lab\Process_Results"
 
-## Creates the dirsssssss
+# Creates the dirs
 New-Item $Final_lab_dir -ItemType Directory -ErrorAction SilentlyContinue
 New-Item $DEAD_dir -ItemType Directory -ErrorAction SilentlyContinue
 New-Item $ALIVE_dir -ItemType Directory -ErrorAction SilentlyContinue
 New-Item $Process_Results -ItemType Directory -ErrorAction SilentlyContinue
 
 
-## Ping sweep workflow
+# Ping sweep workflow
 workflow Test-ConnectionQuickly 
 {   
     param(
@@ -41,22 +41,22 @@ if (Test-Path "$Process_Results\ips.txt")
 }
 else
 {
-    ## Define forth octet
+    # Define forth octet
     $ForthOctet = @(30..104)
     #echo $ForthOctet
 
-    ## Create IPs
+    # Create IPs
     $Ips = foreach ($Octet in $ForthOctet)
     {
         "214.15.106.$Octet"
     }
     #Echo $Ips
 
-    ## Write Ips to a file
+    # Write Ips to a file
     $Ips > "$Process_Results\ips.txt"
 }
 
-## Init a variable 
+# Init a variable 
 $Answer = "n"
 
 if ($DeadIp -ne $null)
@@ -66,13 +66,13 @@ if ($DeadIp -ne $null)
 
 if ($Answer -eq "n")
 {
-    ## Init a variable
+    # Init a variable
     $AliveIp = @()
     Test-ConnectionQuickly -ComputerName $Ips
 }
 elseif ($Answer -eq "y")
 {
-    ## Ping sweep
+    # Ping sweep
     Foreach ($Ip in $AliveIp) 
     {
         $PingResult = Test-Connection $Ip -Count 1 -Quiet
@@ -94,20 +94,20 @@ else
     exit 
 
 }
-## Target only live ips.
+# Target only live ips.
 foreach ($Ip in $AliveIp)
 {
-    ## Get that process info
+    # Get that process info
     $ProcessInfo = Get-WmiObject -class win32_process -ComputerName $Ip
 
-    ## Init a counting variable
+    # Init a counting variable
     $counter = 0
-    ## Make it readable-ish
+    # Make it readable-ish
     $SpecificProcessInfo = Foreach ($Process in $ProcessInfo) 
     {
         ($Process).ProcessName
 
-        ## Count instances of svchost matching the Process Name
+        # Count instances of svchost matching the Process Name
         if (($Process).ProcessName -eq "svchost.exe")
         {
             $counter ++
@@ -120,12 +120,12 @@ foreach ($Ip in $AliveIp)
         ($Process).ExecutablePath
     }
 
-    ## Display some a malware warning
+    # Display some a malware warning
     if ($counter -ge 4)
     {
         Write-Warning "You found MALWARE, you win!! You found svchost.exe $counter times on $Ip."
     }
 
-    ## Write results to a file
+    # Write results to a file
     $SpecificProcessInfo >> "$Process_Results\$Ip.txt"
 }
